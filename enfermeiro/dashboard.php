@@ -11,6 +11,11 @@ exigir_tipo(["enfermeiro"]);
 | PROCESSAR TRIAGEM
 |--------------------------------------------------------------------------
 */
+/*
+|--------------------------------------------------------------------------
+| PROCESSAR TRIAGEM
+|--------------------------------------------------------------------------
+*/
 
 $mensagem = "";
 $erro = "";
@@ -21,6 +26,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $atendimento_id = (int)($_POST["atendimento_id"] ?? 0);
 
     $prioridade = trim($_POST["prioridade"] ?? "");
+
+    $setor_atendimento = trim($_POST["setor_atendimento"] ?? "");
 
     $observacao = trim($_POST["observacao_triagem"] ?? "");
 
@@ -34,6 +41,16 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     ];
 
 
+    $setores_validos = [
+        "Atendimento Geral",
+        "Trauma / Ortopedia",
+        "Obstetrícia",
+        "Pediatria",
+        "Cirurgia",
+        "Outro / Encaminhamento"
+    ];
+
+
     if ($atendimento_id <= 0) {
 
         $erro = "Atendimento inválido.";
@@ -41,6 +58,10 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     } elseif (!in_array($prioridade, $prioridades_validas, true)) {
 
         $erro = "Seleccione uma prioridade válida.";
+
+    } elseif (!in_array($setor_atendimento, $setores_validos, true)) {
+
+        $erro = "Seleccione um sector de encaminhamento.";
 
     } else {
 
@@ -55,6 +76,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
             SET
                 prioridade = ?,
+                setor_atendimento = ?,
                 estado = 'Aguardando médico',
                 observacao_triagem = ?,
                 profissional_triagem_id = ?,
@@ -70,8 +92,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
 
         $stmt->bind_param(
-            "ssii",
+            "sssii",
             $prioridade,
+            $setor_atendimento,
             $observacao,
             $profissional_id,
             $atendimento_id
@@ -1416,7 +1439,7 @@ function classe_prioridade($prioridade)
                                    value="<?= (int)$atendimento["id"]; ?>">
 
 
-                            <label class="form-label">
+                            <!-- <label class="form-label">
 
                                 Observação da enfermagem
 
@@ -1432,7 +1455,7 @@ function classe_prioridade($prioridade)
 
                                 Prioridade do atendimento
 
-                            </label>
+                            </label> -->
 
 
                             <select name="prioridade"
@@ -1530,18 +1553,42 @@ function classe_prioridade($prioridade)
                             </div>
 
 
-                            <button type="submit"
+                            <!-- <button type="submit"
                                     class="confirm-btn">
 
                                 <i class="fa-solid fa-clipboard-check"></i>
 
                                 Confirmar Triagem
 
-                            </button>
+                            </button> -->
+<div class="form-group">
+        <label for="setor_atendimento">Sector de encaminhamento</label>
 
+        <select name="setor_atendimento" id="setor_atendimento" required>
+            <option value="">Seleccione o sector</option>
+            <option value="Atendimento Geral">Atendimento Geral</option>
+            <option value="Trauma / Ortopedia">Trauma / Ortopedia</option>
+            <option value="Obstetrícia">Obstetrícia</option>
+            <option value="Pediatria">Pediatria</option>
+            <option value="Cirurgia">Cirurgia</option>
+            <option value="Outro / Encaminhamento">Outro / Encaminhamento</option>
+        </select>
+    </div>
+
+
+    <div class="form-group">
+        <label>Observação</label>
+
+        <textarea name="observacao_triagem"></textarea>
+    </div>
+
+
+    <button type="submit" class="confirm-btn">
+        Registar Triagem
+    </button>
 
                         </form>
-
+     
                     </div>
 
 

@@ -15,6 +15,27 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 
+<script>
+function controlarGravidez() {
+
+    const sexo = document.getElementById("sexo");
+    const campoGravidez = document.getElementById("campo-gravidez");
+    const gravidez = document.getElementById("gravidez");
+
+    if (sexo.value === "Feminino") {
+
+        campoGravidez.style.display = "block";
+        gravidez.required = true;
+
+    } else {
+
+        campoGravidez.style.display = "none";
+        gravidez.required = false;
+        gravidez.value = "Não aplicável";
+
+    }
+}
+</script>
 <body>
 
 <header class="public-header">
@@ -268,23 +289,11 @@
                 <label>
                     Sexo
 
-                    <select name="sexo"
-                            id="sexo"
-                            required>
-
-                        <option value="">
-                            Selecione
-                        </option>
-
-                        <option value="Masculino">
-                            Masculino
-                        </option>
-
-                        <option value="Feminino">
-                            Feminino
-                        </option>
-
-                    </select>
+                   <select name="sexo" id="sexo" required onchange="controlarGravidez()">
+    <option value="">Selecione</option>
+    <option value="Masculino">Masculino</option>
+    <option value="Feminino">Feminino</option>
+</select>
 
                 </label>
 
@@ -445,7 +454,7 @@
 
                 </label>
 
-
+<div id="campo-gravidez" style="display: none;">
                 <label id="campoGravidez">
 
                     Está grávida?
@@ -471,7 +480,7 @@
                     </select>
 
                 </label>
-
+</div>
             </div>
 
 

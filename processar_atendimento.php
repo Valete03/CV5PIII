@@ -253,13 +253,28 @@ if ($res->num_rows > 0) {
 |--------------------------------------------------------------------------
 */
 
+$partes_nome = preg_split('/\s+/', trim($nome));
+
+$primeiro_nome = $partes_nome[0] ?? "Paciente";
+
+$primeiro_nome = iconv(
+    'UTF-8',
+    'ASCII//TRANSLIT//IGNORE',
+    $primeiro_nome
+);
+
+$primeiro_nome = preg_replace('/[^a-zA-Z]/', '', $primeiro_nome);
+
+$primeiro_nome = ucfirst(strtolower($primeiro_nome));
+
 do {
 
-    $numero =
-        "A-" .
-        date("Ymd") .
-        "-" .
-        random_int(100, 999);
+    $numero = $primeiro_nome . str_pad(
+        (string) random_int(1, 999),
+        3,
+        '0',
+        STR_PAD_LEFT
+    );
 
 
     $stmt = $conn->prepare("
@@ -277,7 +292,6 @@ do {
     $existe = $stmt->get_result()->num_rows > 0;
 
 } while ($existe);
-
 
 /*
 |--------------------------------------------------------------------------
